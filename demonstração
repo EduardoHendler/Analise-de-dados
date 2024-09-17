@@ -1,0 +1,71 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Função para carregar os dados da planilha
+def load_data(file_path):
+    return pd.read_csv(file_path)
+
+# Função para análise de vendas por dia da semana
+def analyze_sales_by_day(df):
+    """Agrupa e analisa as vendas por dia da semana."""
+    sales_by_day = df.groupby('Dia da Semana').size().sort_values(ascending=False)
+    print("\nVendas por Dia da Semana:")
+    print(sales_by_day)
+    
+    # Visualizar vendas por dia da semana
+    plt.figure(figsize=(8, 6))
+    sns.barplot(x=sales_by_day.index, y=sales_by_day.values, palette="viridis")
+    plt.title("Vendas por Dia da Semana")
+    plt.ylabel("Número de Vendas")
+    plt.xlabel("Dia da Semana")
+    plt.xticks(rotation=45)
+    plt.show()
+
+# Função para análise de vendas por item comprado
+def analyze_sales_by_item(df):
+    """Agrupa e analisa as vendas por item comprado."""
+    sales_by_item = df.groupby('Item Comprado').size().sort_values(ascending=False)
+    print("\nItens mais Vendidos:")
+    print(sales_by_item)
+    
+    # Visualizar vendas por item
+    plt.figure(figsize=(8, 6))
+    sns.barplot(x=sales_by_item.values, y=sales_by_item.index, palette="coolwarm")
+    plt.title("Itens mais Vendidos")
+    plt.xlabel("Número de Vendas")
+    plt.ylabel("Item")
+    plt.show()
+
+# Função para análise de vendas por horário
+def analyze_sales_by_time(df):
+    """Agrupa e analisa as vendas por horário."""
+    df['Horário'] = pd.to_datetime(df['Horário'], format='%H:%M').dt.hour  # Extrair apenas as horas
+    sales_by_time = df['Horário'].value_counts().sort_index()
+    print("\nVendas por Horário:")
+    print(sales_by_time)
+    
+    # Visualizar vendas por horário
+    plt.figure(figsize=(8, 6))
+    sns.lineplot(x=sales_by_time.index, y=sales_by_time.values, marker='o', color='b')
+    plt.title("Vendas por Horário")
+    plt.xlabel("Hora do Dia")
+    plt.ylabel("Número de Vendas")
+    plt.xticks(range(0, 24))
+    plt.grid(True)
+    plt.show()
+
+# Função principal para executar as análises
+def main(file_path):
+    # Carregar os dados
+    df = load_data(file_path)
+
+    # Análises
+    analyze_sales_by_day(df)
+    analyze_sales_by_item(df)
+    analyze_sales_by_time(df)
+
+# Chamada da função principal com o caminho do arquivo
+if __name__ == "__main__":
+    file_path = 'python/tabelaclientes.csv'
+    main(file_path)
